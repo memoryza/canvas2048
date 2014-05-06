@@ -191,7 +191,7 @@ function $(id) {
         this.checkGridStatus();
     }
     //合并格子里的值
-    game.prototype.mergeItems(items) {
+    game.prototype.mergeItems = function(items) {
 
     }
 
