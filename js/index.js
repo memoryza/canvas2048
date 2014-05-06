@@ -96,7 +96,7 @@ function $(id) {
             this.x2y[one][dim] = flag;
         }
     }
-    //扫描表格状态，todo：每次产生变动的点进行状态重置
+    //检查并重置表格状态，todo：每次产生变动的点进行状态重置
     game.prototype.checkGridStatus = function() {
         for(var i = 0; i < this.gridNum; i++) {
             for(var j = 0; j < this.gridNum; j++) {
@@ -179,12 +179,22 @@ function $(id) {
             }
         }
         for(var i = 0; i < this.gridNum; i++) {
-
+            this.mergeItems(transform[i]);
         }
-        function addScore() {
-
+        //矩阵转换回来
+        for(var i = 0; i < this.gridNum; i++) {
+            for(var j = 0; j < this.gridNum; j++) {
+                this.resList[j].push(transform[i][j]);
+            }
         }
+        //检查并重置状态
+        this.checkGridStatus();
     }
+    //合并格子里的值
+    game.prototype.mergeItems(items) {
+
+    }
+
 
     //尽量做到一个参数控制整个布局，计算量会比固定数值的大一点
     var canvas  = $('grid'),
