@@ -37,7 +37,6 @@ function $(id) {
             [fourGrid, startPoint], [fourGrid, fWidth], [fourGrid, sWidth], [fourGrid, tGrid], [fourGrid, fourGrid],//横轴
             [startPoint, fourGrid], [fWidth, fourGrid], [sWidth, fourGrid], [tGrid, fourGrid], [fourGrid, fourGrid],//竖轴
         ];
-        console.log(this.endPoint);
         this.bgColor = ['#fff', '#ffb', '#fa3', '#f51', '#f33', '#f00', '#ff3', '#ff0', '#ee0', '#bb0', '#0a0'];//todo
 
         this.drawGrid();
@@ -162,7 +161,6 @@ function $(id) {
     }
     //重新开始
     game.prototype.reStart = function() {
-        console.log(1)
         //todo:考虑将积分、排行本地存储
         //清空积分
         this.score = 0;
@@ -194,7 +192,6 @@ function $(id) {
     if(canvas.getContext) {
         gameObj = new game(canvas);
         gameObj.init();
-        console.log(gameObj)
         $('restart').addEventListener('click', function() {
             gameObj.reStart();
         }, false);
