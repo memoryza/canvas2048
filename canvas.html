@@ -1,219 +1,29 @@
-<style>
-    body,div{padding:0;margin:0;border:0;font-family:'宋体';}
-    #message {width:160px;border-radius:4px;border:1px solid #ccc;;display:none;}
-    #message .title{height:20px;background-color:#000000;text-align:center;line-height:20px;font-size:18px;color:white;padding:5px 0;border-radius: 4px 4px 0 0;}
-    #tipContent{font-size:12px;padding:5px 5px;line-height:20px;}
-    #message .ok{font-size:18px;background-color:#FF8C00;color:white;text-align:center;line-height:30px;border-radius: 0 0 4px 4px ;}
-    #restart{display:block;width:40px;line-height:40px;text-align:center;background-color:#FF8C00;color:white;font-weight:bold;font-size:12px;cursor:pointer;}
-</style>
-<div id="stop"></div>
-<div id="message">
-    <div class="title">友情提醒</div>
-    <div id="tipContent">提醒内容</div>
-    <div class="ok"><a id="confirmBtn">确定</a></div>
-</div>
-<canvas width="400px" height="400px" id="grid">your browser isn't support canvas</canvas>
-<div id="restart">重玩</div>
-<script>
-    function $(id) {
-        return document.getElementById(id);
-    }
+<html>
+    <head>
+        <title>不一样的2048</title>
+        <meta charset="utf-8">
+        <meta content="yes" name="apple-mobile-web-app-capable">
+        <meta content="yes" name="apple-touch-fullscreen">
+        <meta content="telephone=no" name="format-detection">
+        <meta content="black" name="apple-mobile-web-app-status-bar-style">
+        <meta property="wb:webmaster" content="memoryza">
+        <meta name="author" content="memoryza">
+        <meta name="copyright" content="Copyright@jincai.wang@foxmail.com版权所有">
+        <meta name="keywords" content="2048,1024,memoryza">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+        <link type="text/css" rel="styleSheet" href="css/index.css">
+    </head>
+    <body>
+        <div class="game_content" id="content">
+            <div id="restart">重玩</div>
+            <div id="message">
+                <div class="title">友情提醒</div>
+                <div id="tipContent">提醒内容</div>
+                <div class="ok"><a id="confirmBtn">确定</a></div>
+            </div>
+            <canvas width="322px" height="322px" id="grid">your browser isn't support canvas</canvas>
+        </div>
+    </body>
+</html>
 
-    function game(canvas) {
-        var nil = null;
-        this.context = nil;
-        this.score = 0;
-        this.x2y = nil,
-        this.movePoint = nil,
-        this.endPoint = nil,
-        this.bgColor = nil;
-        this.baseNum = 30;
-        this.gWidth = this.baseNum * 2;//格子宽度
-        this.canvas = canvas;
-        this.gridNum = 0;
-        this.resList = nil;
-    }
-    //初始化参数
-    game.prototype.init = function() {
-        var baseNum = this.baseNum,
-            fWidth = this.getWidth(1),
-            sWidth = this.getWidth(2),
-            tGrid = this.getWidth(3),
-            fourGrid = this.getWidth(4);
-
-        this.context = this.canvas.getContext('2d');
-        this.x2y = this.initArray();//只存0、1做状态标记
-        this.resList = this.initArray();//存用户拼装的数据
-        this.gridNum = this.x2y.length;
-        this.movePoint = [
-            [baseNum, baseNum], [baseNum, fWidth], [baseNum, sWidth], [baseNum, tGrid], [baseNum, fourGrid],//横轴
-            [baseNum, baseNum], [fWidth, baseNum], [sWidth, baseNum], [tGrid, baseNum], [fourGrid, baseNum],//竖轴
-        ];
-        this.endPoint = [
-            [fourGrid, baseNum], [fourGrid, fWidth], [fourGrid, sWidth], [fourGrid, tGrid], [fourGrid, fourGrid],//横轴
-            [baseNum, fourGrid], [fWidth, fourGrid], [sWidth, fourGrid], [tGrid, fourGrid], [fourGrid, fourGrid],//竖轴
-        ];
-        this.bgColor = ['#fff', '#ffb', '#fa3', '#f51', '#f33', '#f00', '#ff3', '#ff0', '#ee0', '#bb0', '#0a0'];//todo
-
-        this.drawGrid();
-        this.start();
-        //this.message('^_^我的内部遇到的问题，请刷新试试');
-    }
-    //获取第n条线起点值
-    game.prototype.getWidth = function(num) {
-        return this.baseNum + num * this.gWidth;
-    }
-    //获取格子初始化数据状态
-    game.prototype.initArray = function() {
-        return  [[0, 0, 0, 0],[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
-    }
-    //生成随机数
-    game.prototype.getRandomNum = function(){
-        return  (Math.round(Math.random() - 0.2) + 1) * 2;//降低4出现的概率
-    }
-    //绘制格子
-    game.prototype.drawGrid = function() {
-        this.context.beginPath();
-        this.context.strokeStyle = '#fb6';
-        this.context.lineWidth = 2;
-        for(var i = 0, _len = this.movePoint.length; i < _len; i++) {
-            this.context.moveTo(this.movePoint[i][0], this.movePoint[i][1]);
-            this.context.lineTo(this.endPoint[i][0], this.endPoint[i][1]);
-        }
-        this.context.stroke();
-    }
-    //获取一个格子用于填充,返回[x, y]坐标
-    game.prototype.getIdleGrid = function() {
-        var idleGrid = [];
-        //获取未站位的格子
-        for(var i = 0; i < this.gridNum; i++) {
-            for (var j = 0; j < this.gridNum; j++) {
-                if(this.getGridStatus(i,j) == 1) {
-                    continue;
-                }
-                idleGrid.push([i,j]);
-            }
-        }
-        if(!idleGrid.length) return false;
-        var pos = Math.round(Math.random() * idleGrid.length);
-        pos = (pos == idleGrid.length)? pos - 1 : pos;//fixed 随机最大值
-        return idleGrid[pos];
-    }
-    //设置填充状态
-    game.prototype.getGridStatus = function(one, dim) {
-        if(one < this.gridNum && dim < this.gridNum) {
-            return this.x2y[one][dim];
-        }
-        return false;
-    }
-    //获取填充状态
-    game.prototype.setGridStatus = function(one, dim, flag) {
-        if(one < this.gridNum && dim < this.gridNum) {
-            this.x2y[one][dim] = flag;
-        }
-    }
-    //扫描表格状态，todo：每次产生变动的点进行状态重置
-    game.prototype.checkGridStatus = function() {
-        for(var i = 0; i < this.gridNum; i++) {
-            for(var j = 0; j < this.gridNum; j++) {
-                this.setGridStatus(i, j, (this.getResListData(i,j) == 0 ? 0 : 1));
-            }
-        }
-    }
-
-    //设置表格数值
-    game.prototype.setResListData = function(one, dim, val) {
-        if(one < this.gridNum && dim < this.gridNum) {
-            this.resList[one][dim] = val;
-        }
-    }
-    //设置表格数值,false等同于0
-    game.prototype.getResListData = function(one, dim) {
-        if(one < this.gridNum && dim < this.gridNum) {
-            return this.resList[one][dim];
-        }
-    }
-    //绘制数值
-    game.prototype.drawEntity = function() {
-        var num = this.getRandomNum(),
-            pos = this.getIdleGrid();
-
-        if(!pos) {
-            this.message('^_^我的内部遇到的问题，请刷新试试');
-            return false;
-        }
-        this.setGridStatus(pos[0], pos[1], 1);
-        this.setResListData(pos[0], pos[1], num);
-        this.context.font = 'bold ' + this.baseNum + 'px Arial';
-        this.context.textAlign = 'center';
-        this.context.textBaseline ='middle';
-        var posY = this.baseNum + (1 + pos[0] * 2) * this.gWidth/2,
-            posX= this.baseNum + (1 + pos[1] * 2) * this.gWidth/2;
-
-        this.context.fillText(num, posX, posY);
-    }
-    //信息提示,-1永久显示，直到用户点击
-    game.prototype.message = function(msg, time, cb) {
-        if(typeof time == 'function') {
-            cb = time;
-        }
-        time = time || 5000;
-        //todo点击确定以后的回调事件绑定
-        if(typeof cb == 'function') {
-        }
-        $('tipContent').innerHTML = msg;
-        $('message').style.display = 'block';
-        if(time != -1) {
-            setTimeout(function(){
-                $('message').style.display = 'none';
-            }, time);
-        }
-    }
-    //开始
-    game.prototype.start = function() {
-        for(var i = 0; i < 2; i++) {
-            this.drawEntity();
-        }
-    }
-    //重新开始
-    game.prototype.reStart = function() {
-        console.log(1)
-        //todo:考虑将积分、排行本地存储
-        //清空积分
-        this.score = 0;
-        //清空画布
-        this.context.clearRect(0, 0, 400, 400);
-        //重绘页面
-        this.init();
-    }
-
-    game.prototype.dirUp = function() {
-        var transform = [[], [], [], []];
-        //矩阵转换
-        for(var i = 0; i < this.gridNum; i++) {
-            for(var j = 0; j < this.gridNum; j++) {
-                transform[j].push(this.resList[i][j]);
-            }
-        }
-        for(var i = 0; i < this.gridNum; i++) {
-
-        }
-        function addScore() {
-
-        }
-    }
-
-    //尽量做到一个参数控制整个布局，计算量会比固定数值的大一点
-    var canvas  = $('grid'),
-        gameObj = null;
-    if(canvas.getContext) {
-        gameObj = new game(canvas);
-        gameObj.init();
-        console.log(gameObj)
-        $('restart').addEventListener('click', function() {
-            gameObj.reStart();
-        }, false);
-    }
-
-
-</script>
+<script src="js/index.js"></script>
