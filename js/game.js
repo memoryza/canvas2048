@@ -23,6 +23,7 @@ function game(canvas) {
     this.historyList = nil;//用户操作历史
     this.historyCount = 5;//可回退步数
     this.resetDataList = nil;//当前要重绘的数据
+    this.isGameOver = false;
 }
  //初始化参数
 game.prototype.init = function() {
@@ -68,15 +69,15 @@ game.prototype.getRandomNum = function(){
 game.prototype.drawEntity = function() {
     var num = this.getRandomNum(),
         pos = this.getIdleGrid();
-
     if(!pos) {
-        this.message('5_5 游戏结束');
+        this.gameOver();
         return false;
     }
     this.setGridStatus(pos[0], pos[1], 1);
     this.setResListData(pos[0], pos[1], num);
     this.fillGrid(pos[0], pos[1], num);
 }
+
 //获取一个格子用于填充,返回[x, y]坐标
 game.prototype.getIdleGrid = function() {
     var idleGrid = [];
@@ -122,6 +123,28 @@ game.prototype.drawGridLine = function() {
         this.context.lineTo(this.endPoint[i][0], this.endPoint[i][1]);
     }
     this.context.stroke();
+}
+//检测游戏状态
+game.prototype.checkGameStatus = function() {
+    //先看格子状态
+    for(var i = this.gridNum; --i >= 0;) {
+        for(var j = this.gridNum; --j >= 0;) {
+            if(this.getGridStatus(i,j) === 0) return true;
+        }
+    }
+    //再做数据比较
+     for(var i = 0; i < this.gridNum; i++) {
+        for(var j = 0; j < this.gridNum; j++) {
+            if(this.resList[i][j] === this.resList[i][j+1]) return true;
+            if(this.resList[i+1] && (this.resList[i][j] === this.resList[i+1][j])) return true;
+        }
+    }
+    this.gameOver();
+}
+//游戏结束，要设计成多样化提示
+game.prototype.gameOver = function() {
+    this.isGameOver = true;
+    this.message('5_5 游戏结束');
 }
 //合并格子里的值
 game.prototype.mergeItems = function(items) {

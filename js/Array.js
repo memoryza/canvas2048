@@ -1,5 +1,6 @@
 /**
  * 这里的数据操作只针对于数值、常量、字符串
+ * author:memoryza(jincai.wang@foxmail.com)
  * */
 ;(function() {
     'use strict';

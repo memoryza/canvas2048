@@ -17,6 +17,7 @@ game.prototype.reStart = function() {
     this.prevScore = 0;
     this.resetDataList = null;
     this.canCreateGird = true;
+    this.isGameOver = false;
     //清空画布
     this.context.clearRect(0, 0, 400, 400);
     //重绘页面
@@ -36,6 +37,13 @@ game.prototype.dirCommonOp = function() {
 
         this.prevScore = this.getScore();
         this.drawEntity();
+    } else {
+        //检测一下是不是游戏结束(防止结束以后反复检测状态，耗费性能)
+        if(this.isGameOver) {
+            this.gameOver();
+        } else {
+            this.checkGameStatus();
+        }
     }
 }
 /*这里考虑到上下代码公用,左右也公用，虽然逻辑只有一行只差，但为了保证查看不便暂时不提炼*/

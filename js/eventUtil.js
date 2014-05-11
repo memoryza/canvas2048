@@ -1,3 +1,7 @@
+/**
+ * 事件原型
+ * author:memoryza(jincai.wang@foxmail.com)
+ * */
 var eventUtil ={
     addHandler: function(el, type, handler) {
         if(window.addEventListener) {
