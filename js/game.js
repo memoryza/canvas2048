@@ -6,18 +6,21 @@
 function game(canvas) {
     var nil = null;
     this.context = nil;
-    this.score = 0;
-    this.x2y = nil;
-    this.movePoint = nil;
-    this.endPoint = nil;
-    this.bgColor = nil;
+    this.score = 0;//用户分数
+    this.x2y = nil;//只存格子状态标记
+    this.movePoint = nil;//绘制网格的坐标
+    this.endPoint = nil;//绘制网格的结束坐标
+    this.bgColor = nil;//格子的背景色
     this.startPoint = 1;//坐标起点
-    this.baseNum = 40;
+    this.baseNum = 40;//格子基数
     this.gWidth = this.baseNum * 2;//格子宽度
     this.canvas = canvas;
-    this.gridNum = 0;
-    this.resList = nil;
-    this.canCreateGird = true;
+    this.gridNum = 0;//格子个数
+    this.resList = nil;//存用户拼装的数据
+    this.cacheList = nil;//用户记录上一次操作的历史
+    this.canCreateGird = true;//是否需要重新绘制数据（上一步和本步没有产生格子合并则不需要重绘）
+    this.historyList = nil;//用户操作历史
+    this.historyCount = 5;//可回退步数
 }
  //初始化参数
 game.prototype.init = function() {
@@ -28,9 +31,11 @@ game.prototype.init = function() {
         fourGrid = this.getWidth(4);
 
     this.context = this.canvas.getContext('2d');
-    this.x2y = this.initArray();//只存0、1做状态标记
-    this.resList = this.initArray();//存用户拼装的数据
+    this.x2y = this.initArray();
+    this.resList = this.initArray();
+    this.cacheList = this.initArray();
     this.gridNum = this.x2y.length;
+    this.historyList = [];
     this.movePoint = [
         [startPoint, startPoint], [startPoint, fWidth], [startPoint, sWidth], [startPoint, tGrid], [startPoint, fourGrid],//横轴
         [startPoint, startPoint], [fWidth, startPoint], [sWidth, startPoint], [tGrid, startPoint], [fourGrid, startPoint],//竖轴

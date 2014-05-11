@@ -50,17 +50,63 @@ game.prototype.fillGrid = function(x, y, num) {
 game.prototype.clearGrid = function(x, y) {
     var xPoint = this.startPoint + x * this.gWidth,
         yPoint = this.startPoint + y * this.gWidth;
-    console.log(xPoint, yPoint,this.gWidth);
-    this.context.clearRect(xPoint, yPoint, this.gWidth, this.gWidth);
+        console.log(xPoint+1, yPoint+1, this.gWidth-4, this.gWidth-4);
+    this.context.clearRect(xPoint+1, yPoint+1, this.gWidth-4, this.gWidth-4);
 }
 //重置格子
 game.prototype.resetGrid = function() {
+    var prevHistory = this.getPrevHistory();
     for(var i = 0; i < this.gridNum; i++) {
         for(var j = 0; j < this.gridNum; j++) {
-            this.clearGrid(i, j);
+            //移动前 格子里有值才重绘
+            if(prevHistory[i][j]) {
+                this.clearGrid(j, i);
+            }
             if(this.resList[i][j]) {
-                this.clearGrid(i, j, this.resList[i][j]);
+                console.log('after', i, j);
+                this.fillGrid(i, j, this.resList[i][j]);
             }
         }
     }
+}
+//历史记录
+game.prototype.history = function() {
+    var cacheList = [],x2yList = [];
+    //矩阵转换
+    for(var i = 0; i < this.gridNum; i++) {
+        cacheList[i] = this.cacheList[i].slice(0);
+    }
+    var his = {
+        data: cacheList,
+        score: this.score
+    };
+    //只存5步
+    if(this.historyList.length > 4) {
+        this.historyList.reverse();
+        this.historyList.length = 4;
+    }
+    this.historyList.push(his);
+}
+game.prototype.getPrevHistory = function() {
+    var len = this.historyList.length;
+    if(!len) {
+        return this.initArray();
+    }
+    return this.historyList[len - 1].data;
+}
+//bNum回复几步，连续两次则绘制一次,暂定回退5步
+game.prototype.back = function(bNum) {
+    bNum = parseInt(bNum) ? bNum : 1;
+    bNum = bNum > this.historyCount ? this.historyCount : bNum;
+    bNum = bNum > this.historyList.length ? this.historyList.length : bNum;
+    var his;
+    for(var i = 0; i < bNum; i++) {
+        his = this.historyList.pop();
+    }
+    //回退步数
+    this.historyCount -= bNum;
+    this.score = his.score;
+    this.resList = his.data;
+    this.resetGridStatus();
+    this.resetGrid();
 }

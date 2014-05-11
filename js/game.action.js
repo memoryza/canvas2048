@@ -68,36 +68,45 @@ game.prototype.reStart = function() {
 
 game.prototype.dirUp = function() {
     var transform = [[], [], [], []],
-        cacheList = this.resList;
+        tempData = [];
     //矩阵转换
     for(var i = 0; i < this.gridNum; i++) {
+        this.cacheList[i] = this.resList[i].slice(0);
         for(var j = 0; j < this.gridNum; j++) {
             transform[j].push(this.resList[i][j]);
         }
     }
     for(var i = 0; i < this.gridNum; i++) {
-        this.resList[i] = this.mergeItems(transform[i]);
+        tempData = this.mergeItems(transform[i]);
+        for(var j = 0; j < this.gridNum; j++) {
+            this.resList[j][i] = tempData[j];
+        }
     }
+
     //重置状态
     this.resetGridStatus();
     //如果什么都没有变则不需要充值格子,需要提炼（上，下左右）
-    this.canCreateGird = !cacheList.equal(this.resList);
-
+    this.canCreateGird = !this.cacheList.equal(this.resList);
     if(this.canCreateGird) {
+        //记录历史数据
+        this.history();
         //重置格子
         this.resetGrid();
     }
+    this.drawEntity();
 }
 //合并格子里的值
 game.prototype.mergeItems = function(items) {
     var retItems = [],
         newItems = items.filter(function(val){
-        if(val > 0) return val;
-    });
+            if(val > 0) return val;
+        });
     for(var i =0, _len = newItems.length; i < _len; i++) {
         if(newItems[i] === newItems[i+1]) {
             newItems[i] = 2 * newItems[i];
             newItems[i+1] = 0;
+            //每合并一次就加分
+            this.score += newItems[i];
         }
     }
     newItems = newItems.filter(function(val) {
@@ -115,7 +124,7 @@ game.prototype.drawEntity = function() {
         pos = this.getIdleGrid();
 
     if(!pos) {
-        this.message('^_^我的内部遇到的问题，请刷新试试');
+        this.message('5_5 游戏结束');
         return false;
     }
     this.setGridStatus(pos[0], pos[1], 1);
