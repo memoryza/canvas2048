@@ -50,7 +50,6 @@ game.prototype.fillGrid = function(x, y, num) {
 game.prototype.clearGrid = function(x, y) {
     var xPoint = this.startPoint + x * this.gWidth,
         yPoint = this.startPoint + y * this.gWidth;
-        console.log(xPoint+1, yPoint+1, this.gWidth-4, this.gWidth-4);
     this.context.clearRect(xPoint+1, yPoint+1, this.gWidth-4, this.gWidth-4);
 }
 //重置格子
@@ -63,7 +62,6 @@ game.prototype.resetGrid = function() {
                 this.clearGrid(j, i);
             }
             if(this.resList[i][j]) {
-                console.log('after', i, j);
                 this.fillGrid(i, j, this.resList[i][j]);
             }
         }
