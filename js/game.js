@@ -22,7 +22,7 @@ function game(canvas) {
     this.canCreateGird = true;//是否需要重新绘制数据（上一步和本步没有产生格子合并则不需要重绘）
     this.historyList = nil;//用户操作历史
     this.historyCount = 5;//可回退步数
-    this.resetDataList = nil;//撤销数据，只有撤销时有数据
+    this.resetDataList = nil;//当前要重绘的数据
 }
  //初始化参数
 game.prototype.init = function() {

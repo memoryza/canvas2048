@@ -59,8 +59,9 @@ game.prototype.clearGrid = function(x, y) {
     this.context.clearRect(xPoint+1, yPoint+1, this.gWidth-4, this.gWidth-4);
 }
 //重置格子
-game.prototype.resetGrid = function() {
-    var prevHistory = this.resetDataList || this.getPrevHistory();//优先撤销功能
+game.prototype.resetGrid = function(i) {
+    i = !isNaN(i) && i ? i : 1;
+    var prevHistory = this.resetDataList || this.getSomeHistory(i).data;//优先撤销功能
     for(var i = 0; i < this.gridNum; i++) {
         for(var j = 0; j < this.gridNum; j++) {
             //移动前 格子里有值才重绘
@@ -75,11 +76,8 @@ game.prototype.resetGrid = function() {
 }
 //历史记录
 game.prototype.history = function() {
-    var cacheList = [],x2yList = [];
-    //数组拷贝
-    for(var i = 0; i < this.gridNum; i++) {
-        cacheList[i] = this.cacheList[i].slice(0);
-    }
+    var cacheList = [];
+    cacheList = this.cacheList.copyTo(cacheList);
     var his = {
         data: cacheList,
         score: this.prevScore
@@ -88,15 +86,19 @@ game.prototype.history = function() {
     if(this.historyList.length > 4) {
         this.historyList.reverse();
         this.historyList.length = 4;
+        this.historyList.reverse();
     }
     this.historyList.push(his);
 }
-game.prototype.getPrevHistory = function() {
+game.prototype.getSomeHistory = function(i) {
     var len = this.historyList.length;
     if(!len) {
-        return this.initArray();
+        return {data: this.initArray(), score:0};
     }
-    return this.historyList[len - 1].data;
+    if(i >= len) {
+        i = 1;
+    }
+    return this.historyList[len - i];
 }
 //bNum回复几步，连续两次则绘制一次,暂定回退5步
 game.prototype.back = function(bNum) {
@@ -110,17 +112,17 @@ game.prototype.back = function(bNum) {
     if(bNum > this.historyCount) {
         return false;
     }
-    var his;
-    for(var i = 0; i < bNum; i++) {
-        his = this.historyList.pop();
-    }
-    //回退步数
-    this.resList = his.data;
+    this.resetDataList = this.resList.copyTo(this.resetDataList);
+    var his = this.getSomeHistory(bNum);
+    this.resList = his.data.copyTo(this.resList);
     this.setScore(his.score);
 
-    this.resetDataList = this.resList.copyTo(this.resetDataList);
     this.historyCount -= bNum;
     this.resetGridStatus();
-    this.resetGrid();
+    this.resetGrid(bNum);
     this.resetDataList = null;
+    //后pop，先处理数据
+    for(var i = 0; i < bNum; i++) {
+        this.historyList.pop();
+    }
 }

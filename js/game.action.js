@@ -15,6 +15,7 @@ game.prototype.reStart = function() {
     //清空积分
     this.setScore(0);
     this.prevScore = 0;
+    this.resetDataList = null;
     this.canCreateGird = true;
     //清空画布
     this.context.clearRect(0, 0, 400, 400);
@@ -31,7 +32,7 @@ game.prototype.dirCommonOp = function() {
         //记录历史数据
         this.history();
         //重置格子
-        this.resetGrid();
+        this.resetGrid(1);
 
         this.prevScore = this.getScore();
         this.drawEntity();
@@ -42,8 +43,8 @@ game.prototype.dirUp = function() {
     var transform = [[], [], [], []],
         tempData = [];
     //矩阵转换
+    this.cacheList = this.resList.copyTo(this.cacheList);
     for(var i = 0; i < this.gridNum; i++) {
-        this.cacheList[i] = this.resList[i].slice(0);
         for(var j = 0; j < this.gridNum; j++) {
             transform[j].push(this.resList[i][j]);
         }
@@ -60,8 +61,8 @@ game.prototype.dirDown = function() {
     var transform = [[], [], [], []],
         tempData = [];
     //矩阵转换
+    this.cacheList = this.resList.copyTo(this.cacheList);
     for(var i = 0; i < this.gridNum; i++) {
-        this.cacheList[i] = this.resList[i].slice(0);
         for(var j = 0; j < this.gridNum; j++) {
             transform[j].push(this.resList[i][j]);
         }
@@ -75,11 +76,10 @@ game.prototype.dirDown = function() {
     this.dirCommonOp();
 }
 game.prototype.dirLeft = function() {
-    var transform = [[], [], [], []],
-        tempData = [];
+    var transform = [[], [], [], []];
+    this.cacheList = this.resList.copyTo(this.cacheList);
     //矩阵转换
     for(var i = 0; i < this.gridNum; i++) {
-        this.cacheList[i] = this.resList[i].slice(0);
         transform[i] = this.resList[i];
     }
     for(var i = 0; i < this.gridNum; i++) {
@@ -88,11 +88,10 @@ game.prototype.dirLeft = function() {
     this.dirCommonOp();
 }
 game.prototype.dirRight = function() {
-    var transform = [[], [], [], []],
-        tempData = [];
+    var transform = [[], [], [], []];
+    this.cacheList = this.resList.copyTo(this.cacheList);
     //矩阵转换
     for(var i = 0; i < this.gridNum; i++) {
-        this.cacheList[i] = this.resList[i].slice(0);
         transform[i] = this.resList[i].reverse();
     }
     for(var i = 0; i < this.gridNum; i++) {

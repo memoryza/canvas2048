@@ -7,6 +7,7 @@
     function $(id) {
         var $this = document.getElementById(id)
         $this.data = function(key, val) {
+            if(!key) return;
             if(val === undefined) {
                 return this.key;
             }
