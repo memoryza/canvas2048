@@ -4,53 +4,75 @@
         initDom: function() {
             //初始化撤销数据
             $('undo').data('backCount', 5);
-
-            var canvas  = $('grid'),
-                gameObj = null;
-            if(canvas.getContext) {
-                gameObj = new game(canvas);
-                gameObj.init();
-                //绑定重玩事件
-                eventUtil.addHandler($('restart'), 'click', function() {
-                    gameObj.reStart();
-                    $('undo').data('backCount', 5);
-                    $('score').innerHTML = gameObj.getScore();
-                });
-                //上
-                eventUtil.addHandler($('up'), 'click', function() {
-                    gameObj.dirUp();
-                    $('score').innerHTML = gameObj.getScore();
-                });
-                 //下
-                eventUtil.addHandler($('down'), 'click', function() {
-                    gameObj.dirDown();
-                    $('score').innerHTML = gameObj.getScore();
-                });
-                //左
-                eventUtil.addHandler($('left'), 'click', function() {
-                    gameObj.dirLeft();
-                    $('score').innerHTML = gameObj.getScore();
-                });
-                //右
-                eventUtil.addHandler($('right'), 'click', function() {
-                    gameObj.dirRight();
-                    $('score').innerHTML = gameObj.getScore();
-                });
-                //撤销
-                eventUtil.addHandler($('undo'), 'click', function() {
-                    var count = parseInt(this.data('backCount'));
-                    if(!isNaN(count) && count > 0) {
-                        if(false !== gameObj.back(1)) {
-                            $('undoNum').innerHTML = --count;
-                            this.data('backCount', count);
-                            $('score').innerHTML = gameObj.getScore();
-                        }
-                    } else {
-                        $('undoNum').innerHTML = '0';
+            //绑定重玩事件
+            eventUtil.addHandler($('restart'), 'click', function() {
+                gameObj.reStart();
+                $('undo').data('backCount', 5);
+                Index.changeInfo();
+            });
+            //上
+            eventUtil.addHandler($('up'), 'click', function() {
+                gameObj.dirUp();
+                Index.changeInfo();
+            });
+             //下
+            eventUtil.addHandler($('down'), 'click', function() {
+                gameObj.dirDown();
+                Index.changeInfo();
+            });
+            //左
+            eventUtil.addHandler($('left'), 'click', function() {
+                gameObj.dirLeft();
+                Index.changeInfo();
+            });
+            //右
+            eventUtil.addHandler($('right'), 'click', function() {
+                gameObj.dirRight();
+                Index.changeInfo();
+            });
+            //撤销
+            eventUtil.addHandler($('undo'), 'click', function() {
+                var count = parseInt(this.data('backCount'));
+                if(!isNaN(count) && count > 0) {
+                    if(false !== gameObj.back(1)) {
+                        $('undoNum').innerHTML = --count;
+                        this.data('backCount', count);
+                        $('score').innerHTML = gameObj.getScore();
                     }
-                });
-            }
+                } else {
+                    $('undoNum').innerHTML = '0';
+                }
+            });
+            eventUtil.addHandler(document, 'keyup', function(e) {
+                var ev = eventUtil.getEvent(e),
+                    code = eventUtil.getCharCode(ev);
+                switch(code) {
+                    case 37:
+                        $('left').click();
+                        break;
+                    case 38:
+                        $('up').click();
+                        break;
+                    case 39:
+                        $('right').click();
+                        break;
+                    case 40:
+                        $('down').click();
+                        break;
+                }
+            })
+        },
+        //会加入其他改动信息
+        changeInfo: function() {
+            $('score').innerHTML = gameObj.getScore();
         }
     }
-    Index.initDom();
+
+    var canvas  = $('grid'),
+        gameObj = null;
+    if(canvas.getContext) {
+        gameObj = new game(canvas);
+        gameObj.init();
+        Index.initDom();
+    }
 });

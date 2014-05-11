@@ -9,7 +9,7 @@ var eventUtil ={
         }
     },
     getCharCode: function(ev) {
-        return typeof ev.charCode == 'number' ? ev.charCode : ev.keyCode;
+        return ev.charCode || ev.keyCode || ev.witch;
     },
     getEvent: function(ev) {
         return ev ? ev : window.event;
