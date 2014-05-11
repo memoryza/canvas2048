@@ -3,6 +3,12 @@
 * author:memoryza(jincai.wang@foxmail.com)
 **/
 
+game.prototype.getScore = function() {
+    return this.score;
+}
+game.prototype.setScore = function(num) {
+   this.score = num;
+}
 //设置填充状态
 game.prototype.getGridStatus = function(one, dim) {
     if(one < this.gridNum && dim < this.gridNum) {
@@ -54,7 +60,7 @@ game.prototype.clearGrid = function(x, y) {
 }
 //重置格子
 game.prototype.resetGrid = function() {
-    var prevHistory = this.getPrevHistory();
+    var prevHistory = this.resetDataList || this.getPrevHistory();//优先撤销功能
     for(var i = 0; i < this.gridNum; i++) {
         for(var j = 0; j < this.gridNum; j++) {
             //移动前 格子里有值才重绘
@@ -70,13 +76,13 @@ game.prototype.resetGrid = function() {
 //历史记录
 game.prototype.history = function() {
     var cacheList = [],x2yList = [];
-    //矩阵转换
+    //数组拷贝
     for(var i = 0; i < this.gridNum; i++) {
         cacheList[i] = this.cacheList[i].slice(0);
     }
     var his = {
         data: cacheList,
-        score: this.score
+        score: this.prevScore
     };
     //只存5步
     if(this.historyList.length > 4) {
@@ -94,17 +100,27 @@ game.prototype.getPrevHistory = function() {
 }
 //bNum回复几步，连续两次则绘制一次,暂定回退5步
 game.prototype.back = function(bNum) {
-    bNum = parseInt(bNum) ? bNum : 1;
-    bNum = bNum > this.historyCount ? this.historyCount : bNum;
-    bNum = bNum > this.historyList.length ? this.historyList.length : bNum;
+    bNum = parseInt(bNum);
+    if(isNaN(bNum) || !parseInt(bNum)) {
+        return false;
+    }
+    if(bNum > this.historyList.length) {
+        return false;
+    }
+    if(bNum > this.historyCount) {
+        return false;
+    }
     var his;
     for(var i = 0; i < bNum; i++) {
         his = this.historyList.pop();
     }
     //回退步数
-    this.historyCount -= bNum;
-    this.score = his.score;
     this.resList = his.data;
+    this.setScore(his.score);
+
+    this.resetDataList = this.resList.copyTo(this.resetDataList);
+    this.historyCount -= bNum;
     this.resetGridStatus();
     this.resetGrid();
+    this.resetDataList = null;
 }

@@ -13,7 +13,8 @@ game.prototype.start = function() {
 game.prototype.reStart = function() {
     //todo:考虑将积分、排行本地存储
     //清空积分
-    this.score = 0;
+    this.setScore(0);
+    this.prevScore = 0;
     this.canCreateGird = true;
     //清空画布
     this.context.clearRect(0, 0, 400, 400);
@@ -32,6 +33,7 @@ game.prototype.dirCommonOp = function() {
         //重置格子
         this.resetGrid();
     }
+    this.prevScore = this.getScore();
     this.drawEntity();
 }
 /*这里考虑到上下代码公用,左右也公用，虽然逻辑只有一行只差，但为了保证查看不便暂时不提炼*/

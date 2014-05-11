@@ -7,6 +7,7 @@ function game(canvas) {
     var nil = null;
     this.context = nil;
     this.score = 0;//用户分数
+    this.prevScore = 0;//用户上次积分（合并数据项的时候加积分了，暂时没想到合并之后再加的好办法：除非合并函数返回object）
     this.x2y = nil;//只存格子状态标记
     this.movePoint = nil;//绘制网格的坐标
     this.endPoint = nil;//绘制网格的结束坐标
@@ -21,6 +22,7 @@ function game(canvas) {
     this.canCreateGird = true;//是否需要重新绘制数据（上一步和本步没有产生格子合并则不需要重绘）
     this.historyList = nil;//用户操作历史
     this.historyCount = 5;//可回退步数
+    this.resetDataList = nil;//撤销数据，只有撤销时有数据
 }
  //初始化参数
 game.prototype.init = function() {
@@ -132,7 +134,7 @@ game.prototype.mergeItems = function(items) {
             newItems[i] = 2 * newItems[i];
             newItems[i+1] = 0;
             //每合并一次就加分
-            this.score += newItems[i];
+            this.setScore(this.getScore() + newItems[i]);
         }
     }
     newItems = newItems.filter(function(val) {

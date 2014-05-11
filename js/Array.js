@@ -1,3 +1,6 @@
+/**
+ * 这里的数据操作只针对于数值、常量、字符串
+ * */
 ;(function() {
     'use strict';
     function isType(type) {
@@ -19,6 +22,20 @@
                 if(target[i] !== this[i]) return false;
             }
             return true;
+        }
+    }
+    //两层拷贝
+    if(typeof Array.prototype.copyTo != 'function') {
+        Array.prototype.copyTo = function(target) {
+            if(!Array.isArray(target)) target = [];//不用new Array，防止this下挂参数，影响实际长度
+            for(var i = 0, _len = this.length; i < _len; i++) {
+                if(Array.isArray(this[i])) {
+                    target[i] = this[i].slice(0);
+                    continue;
+                }
+                target[i] = this[i];
+            }
+            return target;
         }
     }
 })();
