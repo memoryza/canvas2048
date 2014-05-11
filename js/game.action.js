@@ -23,18 +23,19 @@ game.prototype.reStart = function() {
 }
 //移动完毕后公用部分
 game.prototype.dirCommonOp = function() {
-    //重置状态
-    this.resetGridStatus();
     //如果什么都没有变则不需要充值格子,需要提炼（上，下左右）
     this.canCreateGird = !this.cacheList.equal(this.resList);
     if(this.canCreateGird) {
+        //重置状态
+        this.resetGridStatus();
         //记录历史数据
         this.history();
         //重置格子
         this.resetGrid();
+
+        this.prevScore = this.getScore();
+        this.drawEntity();
     }
-    this.prevScore = this.getScore();
-    this.drawEntity();
 }
 /*这里考虑到上下代码公用,左右也公用，虽然逻辑只有一行只差，但为了保证查看不便暂时不提炼*/
 game.prototype.dirUp = function() {
