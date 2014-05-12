@@ -47,7 +47,20 @@ game.prototype.init = function() {
         [fourGrid, startPoint], [fourGrid, fWidth], [fourGrid, sWidth], [fourGrid, tGrid], [fourGrid, fourGrid],//横轴
         [startPoint, fourGrid], [fWidth, fourGrid], [sWidth, fourGrid], [tGrid, fourGrid], [fourGrid, fourGrid],//竖轴
     ];
-    this.bgColor = ['#fff', '#ffb', '#fa3', '#f51', '#f33', '#f00', '#ff3', '#ff0', '#ee0', '#bb0', '#0a0'];//todo
+    this.bgColor = {
+        '2': '#eee',
+        '4': '#ffb',
+        '8': '#fa3',
+        '16': '#f51',
+        '32': '#f33',
+        '64': '#f00',
+        '128': '#ff3',
+        '256': '#ff0',
+        '512': '#ee0',
+        '1024': '#bb0',
+        '2048': '#0a0',
+        '4096': '#0a0'
+        };//todo
 
     this.drawGridLine();
     this.start();

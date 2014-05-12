@@ -45,9 +45,14 @@ game.prototype.getResListData = function(one, dim) {
 }
 //填充格子(坐标_
 game.prototype.fillGrid = function(x, y, num) {
+    //绘制背景
+    this.context.fillStyle = this.bgColor[num];
+    this.context.fillRect(3 + y * this.gWidth, 3 + x * this.gWidth,  this.gWidth-4, this.gWidth-4);
+    //绘制文字
     this.context.font = 'bold ' + this.baseNum + 'px Arial';
     this.context.textAlign = 'center';
     this.context.textBaseline ='middle';
+    this.context.fillStyle = '#000';
     var posY = this.startPoint + (1 + x * 2) * this.gWidth/2,
         posX= this.startPoint + (1 + y * 2) * this.gWidth/2;
     this.context.fillText(num, posX, posY);
@@ -56,7 +61,7 @@ game.prototype.fillGrid = function(x, y, num) {
 game.prototype.clearGrid = function(x, y) {
     var xPoint = this.startPoint + x * this.gWidth,
         yPoint = this.startPoint + y * this.gWidth;
-    this.context.clearRect(xPoint+1, yPoint+1, this.gWidth-4, this.gWidth-4);
+    this.context.clearRect(xPoint+1, yPoint+1, this.gWidth-2, this.gWidth-2);
 }
 //重置格子
 game.prototype.resetGrid = function(i) {
