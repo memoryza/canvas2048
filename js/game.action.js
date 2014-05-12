@@ -26,6 +26,10 @@ game.prototype.reStart = function() {
 //移动完毕后公用部分
 game.prototype.dirCommonOp = function() {
     //如果什么都没有变则不需要充值格子,需要提炼（上，下左右）
+    if(this.isGameOver) {
+        this.gameOver();
+        return false;
+    }
     this.canCreateGird = !this.cacheList.equal(this.resList);
     if(this.canCreateGird) {
         //重置状态

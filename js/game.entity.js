@@ -130,4 +130,5 @@ game.prototype.back = function(bNum) {
     for(var i = 0; i < bNum; i++) {
         this.historyList.pop();
     }
+    this.isGameOver = false;
 }
