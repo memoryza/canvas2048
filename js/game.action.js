@@ -18,6 +18,7 @@ game.prototype.reStart = function() {
     this.resetDataList = null;
     this.canCreateGird = true;
     this.isGameOver = false;
+    this.historyCount = 5;
     //清空画布
     this.context.clearRect(0, 0, 400, 400);
     //重绘页面

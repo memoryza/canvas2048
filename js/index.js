@@ -8,6 +8,7 @@
             eventUtil.addHandler($('restart'), 'click', function() {
                 gameObj.reStart();
                 $('undo').data('backCount', 5);
+                $('undoNum').innerHTML = 5;
                 Index.changeInfo();
             });
             //上
