@@ -2,4 +2,4 @@
 ---------
 ����2048������Ӧ��֪������һ��ʲô���ӵ���Ϸ����Ҫ��2048�����»���
 
-������ַ:http://www.aililuo.com/demo/demindex.html
+试玩网址：http://www.aililuo.com/demo/index.html
