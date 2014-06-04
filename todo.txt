@@ -1,0 +1,6 @@
+1.canvas animate 效果
+2.离线存储
+3.封装app
+4.调整站点tip及样式
+5.websocket实现实时双控版本
+6.特殊版本功能，道具
