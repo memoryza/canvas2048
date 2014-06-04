@@ -4,26 +4,32 @@
 **/
 
 function game(canvas) {
-    var nil = null;
-    this.context = nil;
-    this.score = 0;//用户分数
-    this.prevScore = 0;//用户上次积分（合并数据项的时候加积分了，暂时没想到合并之后再加的好办法：除非合并函数返回object）
-    this.x2y = nil;//只存格子状态标记
-    this.movePoint = nil;//绘制网格的坐标
-    this.endPoint = nil;//绘制网格的结束坐标
-    this.bgColor = nil;//格子的背景色
-    this.startPoint = 1;//坐标起点
-    this.baseNum = 40;//格子基数
-    this.gWidth = this.baseNum * 2;//格子宽度
-    this.canvas = canvas;
-    this.gridNum = 0;//格子个数
-    this.resList = nil;//存用户拼装的数据
-    this.cacheList = nil;//用户记录上一次操作的历史
-    this.canCreateGird = true;//是否需要重新绘制数据（上一步和本步没有产生格子合并则不需要重绘）
-    this.historyList = nil;//用户操作历史
-    this.historyCount = 5;//可回退步数
-    this.resetDataList = nil;//当前要重绘的数据
-    this.isGameOver = false;
+    if(this instanceof game) {
+        var nil = null;
+        this.context = nil;
+        this.score = 0;//用户分数
+        this.prevScore = 0;//用户上次积分（合并数据项的时候加积分了，暂时没想到合并之后再加的好办法：除非合并函数返回object）
+        this.x2y = nil;//只存格子状态标记
+        this.movePoint = nil;//绘制网格的坐标
+        this.endPoint = nil;//绘制网格的结束坐标
+        this.bgColor = nil;//格子的背景色
+        this.startPoint = 1;//坐标起点
+        this.baseNum = 40;//格子基数
+        this.gWidth = this.baseNum * 2;//格子宽度
+        this.canvas = canvas;
+        this.gridNum = 0;//格子个数
+        this.resList = nil;//存用户拼装的数据
+        this.cacheList = nil;//用户记录上一次操作的历史
+        this.canCreateGird = true;//是否需要重新绘制数据（上一步和本步没有产生格子合并则不需要重绘）
+        this.historyList = nil;//用户操作历史
+        this.historyCount = 5;//可回退步数
+        this.resetDataList = nil;//当前要重绘的数据
+        this.isGameOver = false;
+        this.animateList = []; //[{a:b, b:c, c:c,d:d}]有a移动到b
+        this.direction = 0;//0=>上,1=>下， 2=>左, 3=>右
+    } else {
+        new game(canvas);
+    }
 }
  //初始化参数
 game.prototype.init = function() {
@@ -180,4 +186,7 @@ game.prototype.mergeItems = function(items) {
         retItems.push(newItems[i] ? newItems[i] : 0);
     }
     return retItems;
+}
+game.prototype.animate = function() {
+
 }

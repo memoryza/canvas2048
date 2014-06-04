@@ -41,7 +41,11 @@ game.prototype.dirCommonOp = function() {
         this.resetGrid(1);
 
         this.prevScore = this.getScore();
-        this.drawEntity();
+        var that = this;
+        setTimeout(function() {
+            that.drawEntity();
+        }, 200);
+
     } else {
         //检测一下是不是游戏结束(防止结束以后反复检测状态，耗费性能)
         if(this.isGameOver) {
@@ -68,6 +72,7 @@ game.prototype.dirUp = function() {
             this.resList[j][i] = tempData[j];
         }
     }
+    this.direction = 0;
     this.dirCommonOp();
 }
 game.prototype.dirDown = function() {
@@ -86,6 +91,7 @@ game.prototype.dirDown = function() {
             this.resList[j][i] = tempData[j];
         }
     }
+    this.direction = 1;
     this.dirCommonOp();
 }
 game.prototype.dirLeft = function() {
@@ -98,6 +104,7 @@ game.prototype.dirLeft = function() {
     for(var i = 0; i < this.gridNum; i++) {
         this.resList[i] = this.mergeItems(transform[i]);
     }
+    this.direction = 2;
     this.dirCommonOp();
 }
 game.prototype.dirRight = function() {
@@ -110,5 +117,6 @@ game.prototype.dirRight = function() {
     for(var i = 0; i < this.gridNum; i++) {
         this.resList[i] = this.mergeItems(transform[i]).reverse();
     }
+    this.direction = 3;
     this.dirCommonOp();
 }

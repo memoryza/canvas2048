@@ -111,7 +111,6 @@
                     endY = touchEnd.pageY,
                     dirUOrD = endY - startY,
                     dirLOrR = endX - startX;
-
                 if(dirLOrR > 100) {
                     Index.controller('right');
                     return;
