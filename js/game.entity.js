@@ -64,19 +64,23 @@ game.prototype.clearGrid = function(x, y) {
     this.context.clearRect(xPoint+1, yPoint+1, this.gWidth-2, this.gWidth-2);
 }
 //重置格子
-game.prototype.resetGrid = function(i) {
-    i = !isNaN(i) && i ? i : 1;
-    var prevHistory = this.resetDataList || this.getSomeHistory(i).data;//优先撤销功能
+game.prototype.resetGrid = function(step) {
+    var that = this;
+    step = !isNaN(step) && step ? step : 1;
+    var prevHistory = this.resetDataList || this.getSomeHistory(step).data;//优先撤销功能
     for(var i = 0; i < this.gridNum; i++) {
-        for(var j = 0; j < this.gridNum; j++) {
-            //移动前 格子里有值才重绘
-            if(prevHistory[i][j]) {
-                this.clearGrid(j, i);
-            }
-            if(this.resList[i][j]) {
-                this.fillGrid(i, j, this.resList[i][j]);
-            }
-        }
+        this.animate(i, function() {
+            for(var j = 0; j < that.gridNum; j++) {
+                //移动前 格子里有值才重绘
+                if(prevHistory[i][j]) {
+                    that.clearGrid(j, i);
+                }
+                if(that.resList[i][j]) {
+                    that.fillGrid(i, j, that.resList[i][j]);
+                }
+            }  
+        });
+        
     }
 }
 //历史记录

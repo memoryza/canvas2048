@@ -25,7 +25,7 @@ function game(canvas) {
         this.historyCount = 5;//可回退步数
         this.resetDataList = nil;//当前要重绘的数据
         this.isGameOver = false;
-        this.animateList = []; //[{a:b, b:c, c:c,d:d}]有a移动到b
+        //this.animateList = []; //[{a:b, b:c, c:c,d:d}]有a移动到b
         this.direction = 0;//0=>上,1=>下， 2=>左, 3=>右
     } else {
         new game(canvas);
@@ -185,13 +185,13 @@ game.prototype.mergeItems = function(items) {
 
     for(var i =0, _len = newItems.length; i < _len; i++) {
         //统计动画变化{3=>1,0=>0}
-        for(;startIndex < items.length; startIndex++) {
-            if(newItems[i] == items[startIndex]) {
-                actionArr[startIndex] = i;
-                startIndex++;
-                break;
-            }
-        }
+        // for(;startIndex < items.length; startIndex++) {
+        //     if(newItems[i] == items[startIndex]) {
+        //         actionArr[startIndex] = i;
+        //         startIndex++;
+        //         break;
+        //     }
+        // }
         if(newItems[i] === newItems[i+1]) {
             newItems[i] = 2 * newItems[i];
             newItems[i+1] = 0;
@@ -205,14 +205,14 @@ game.prototype.mergeItems = function(items) {
     });
 
     for(var i =0, _len = items.length; i < _len; i++) {
-         //统计动画变化{3=>1,0=>0}
-        for(;startIndex < items.length; startIndex++) {
-            if(tempItems[i] && (newItems[i] == tempItems[startIndex])) {
-                actionArr[startIndex] = i;
-                startIndex++;
-                break;
-            }
-        }
+        //  //统计动画变化{3=>1,0=>0}
+        // for(;startIndex < items.length; startIndex++) {
+        //     if(tempItems[i] && (newItems[i] == tempItems[startIndex])) {
+        //         actionArr[startIndex] = i;
+        //         startIndex++;
+        //         break;
+        //     }
+        // }
         if(actionArr[i] == i) delete actionArr[i];
         retItems.push(tempItems[i] ? tempItems[i] : 0);
     }
@@ -220,8 +220,37 @@ game.prototype.mergeItems = function(items) {
 }
 //清空动画数据
 game.prototype.clearAnimateData =  function() {
-    this.animateList.length = 0;
+    // this.animateList.length = 0;
 }
-game.prototype.animate = function() {
-
+//暂时不做动画
+game.prototype.animate = function(i, callback) {
+    // var animateObj = this.animateList[i],
+    //     animateK = [],
+    //     animateV = [],
+    //     _animate;
+    // for(var key in animateObj) {
+    //     animateK.push(key);
+    //     animateV.push(animateObj[key]);
+    // }
+    // if(animateK.length && animateV.length) {
+    //      switch(this.direction) {
+    //         case 0:
+    //             _animate = function() {
+    //                 for(var i = 0, _len < animateK.length; i < _len; i++) {
+    //                     this.fillGrid()
+    //                 }
+    //             }
+    //             break;
+    //         case 1:
+    //             break;
+    //         case 2:
+    //             break;
+    //         case 3:
+    //             break;
+    //     }
+    //     typeof _animate == 'function' && _animate();
+    //     typeof callback == 'function' && callback();
+    // } else {
+        typeof callback == 'function' && callback();   
+    // }
 }

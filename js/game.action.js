@@ -72,7 +72,7 @@ game.prototype.dirUp = function() {
     for(var i = 0; i < this.gridNum; i++) {
         ret = this.mergeItems(transform[i])
         tempData = ret.retItems;
-        this.animateList.push(ret.actionArr);
+       // this.animateList.push(ret.actionArr);
         for(var j = 0; j < this.gridNum; j++) {
             this.resList[j][i] = tempData[j];
         }
@@ -96,7 +96,7 @@ game.prototype.dirDown = function() {
     for(var i = 0; i < this.gridNum; i++) {
         ret = this.mergeItems(transform[i].reverse());
         tempData = ret.retItems.reverse();
-        this.animateList.push(ret.actionArr);
+       // this.animateList.push(ret.actionArr);
         for(var j = 0; j < this.gridNum; j++) {
             this.resList[j][i] = tempData[j];
         }
@@ -118,7 +118,7 @@ game.prototype.dirLeft = function() {
     for(var i = 0; i < this.gridNum; i++) {
         ret = this.mergeItems(transform[i])
         this.resList[i] = ret.retItems;
-        this.animateList.push(ret.actionArr);
+        //this.animateList.push(ret.actionArr);
     }
     this.direction = 2;
     this.dirCommonOp();
@@ -137,7 +137,7 @@ game.prototype.dirRight = function() {
     for(var i = 0; i < this.gridNum; i++) {
         ret = this.mergeItems(transform[i]);
         this.resList[i] = ret.retItems.reverse();
-        this.animateList.push(ret.actionArr);
+       // this.animateList.push(ret.actionArr);
     }
     this.direction = 3;
     this.dirCommonOp();
