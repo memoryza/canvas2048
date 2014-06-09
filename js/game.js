@@ -40,9 +40,9 @@ game.prototype.init = function() {
         fourGrid = this.getWidth(4);
 
     this.context = this.canvas.getContext('2d');
-    this.x2y = this.initArray();
-    this.resList = this.initArray();
-    this.cacheList = this.initArray();
+    this.x2y = this.initArray(0);
+    this.resList = this.initArray(0);
+    this.cacheList = this.initArray(0);
     this.gridNum = this.x2y.length;
     this.historyList = [];
     this.movePoint = [
@@ -77,8 +77,16 @@ game.prototype.getWidth = function(num) {
     return this.startPoint + num * this.gWidth;
 }
 //获取格子初始化数据状态
-game.prototype.initArray = function() {
-    return  [[0, 0, 0, 0],[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+game.prototype.initArray = function(initVal) {
+    var ret = [[], [], [], []];
+    if(initVal !== undefined && isFinite(initVal)) {
+       for(var i = 4; i-- > 0;) {
+            for(var j = 4; j-- > 0;) {
+                ret[i][j] = initVal;
+            }
+        } 
+    }    
+    return ret;
 }
 //生成随机数
 game.prototype.getRandomNum = function(){
@@ -168,10 +176,22 @@ game.prototype.gameOver = function() {
 //合并格子里的值
 game.prototype.mergeItems = function(items) {
     var retItems = [],
+        actionArr = {},
         newItems = items.filter(function(val){
             if(val > 0) return val;
-        });
+        }),
+        tempItems = [],
+        startIndex = 0;
+
     for(var i =0, _len = newItems.length; i < _len; i++) {
+        //统计动画变化{3=>1,0=>0}
+        for(;startIndex < items.length; startIndex++) {
+            if(newItems[i] == items[startIndex]) {
+                actionArr[startIndex] = i;
+                startIndex++;
+                break;
+            }
+        }
         if(newItems[i] === newItems[i+1]) {
             newItems[i] = 2 * newItems[i];
             newItems[i+1] = 0;
@@ -179,13 +199,28 @@ game.prototype.mergeItems = function(items) {
             this.setScore(this.getScore() + newItems[i]);
         }
     }
-    newItems = newItems.filter(function(val) {
+    startIndex = 0;
+    tempItems = newItems.filter(function(val) {
         if(val > 0) return val;
     });
+
     for(var i =0, _len = items.length; i < _len; i++) {
-        retItems.push(newItems[i] ? newItems[i] : 0);
+         //统计动画变化{3=>1,0=>0}
+        for(;startIndex < items.length; startIndex++) {
+            if(tempItems[i] && (newItems[i] == tempItems[startIndex])) {
+                actionArr[startIndex] = i;
+                startIndex++;
+                break;
+            }
+        }
+        if(actionArr[i] == i) delete actionArr[i];
+        retItems.push(tempItems[i] ? tempItems[i] : 0);
     }
-    return retItems;
+    return {retItems: retItems, actionArr: actionArr};
+}
+//清空动画数据
+game.prototype.clearAnimateData =  function() {
+    this.animateList.length = 0;
 }
 game.prototype.animate = function() {
 

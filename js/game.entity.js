@@ -98,7 +98,7 @@ game.prototype.history = function() {
 game.prototype.getSomeHistory = function(i) {
     var len = this.historyList.length;
     if(!len) {
-        return {data: this.initArray(), score:0};
+        return {data: this.initArray(0), score:0};
     }
     if(i >= len) {
         i = 1;

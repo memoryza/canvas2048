@@ -57,8 +57,11 @@ game.prototype.dirCommonOp = function() {
 }
 /*这里考虑到上下代码公用,左右也公用，虽然逻辑只有一行只差，但为了保证查看不便暂时不提炼*/
 game.prototype.dirUp = function() {
-    var transform = [[], [], [], []],
-        tempData = [];
+    var transform = this.initArray(),
+        tempData = [],
+        ret;
+    //清空动画数据
+    this.clearAnimateData();
     //矩阵转换
     this.cacheList = this.resList.copyTo(this.cacheList);
     for(var i = 0; i < this.gridNum; i++) {
@@ -67,7 +70,9 @@ game.prototype.dirUp = function() {
         }
     }
     for(var i = 0; i < this.gridNum; i++) {
-        tempData = this.mergeItems(transform[i]);
+        ret = this.mergeItems(transform[i])
+        tempData = ret.retItems;
+        this.animateList.push(ret.actionArr);
         for(var j = 0; j < this.gridNum; j++) {
             this.resList[j][i] = tempData[j];
         }
@@ -76,8 +81,11 @@ game.prototype.dirUp = function() {
     this.dirCommonOp();
 }
 game.prototype.dirDown = function() {
-    var transform = [[], [], [], []],
-        tempData = [];
+    var transform = this.initArray(),
+        tempData = [],
+        ret;
+    //清空动画数据
+    this.clearAnimateData();
     //矩阵转换
     this.cacheList = this.resList.copyTo(this.cacheList);
     for(var i = 0; i < this.gridNum; i++) {
@@ -86,7 +94,9 @@ game.prototype.dirDown = function() {
         }
     }
     for(var i = 0; i < this.gridNum; i++) {
-        tempData = this.mergeItems(transform[i].reverse()).reverse();
+        ret = this.mergeItems(transform[i].reverse());
+        tempData = ret.retItems.reverse();
+        this.animateList.push(ret.actionArr);
         for(var j = 0; j < this.gridNum; j++) {
             this.resList[j][i] = tempData[j];
         }
@@ -95,27 +105,39 @@ game.prototype.dirDown = function() {
     this.dirCommonOp();
 }
 game.prototype.dirLeft = function() {
-    var transform = [[], [], [], []];
+    var transform = this.initArray(),
+        ret;
+    //清空动画数据
+    this.clearAnimateData();
+
     this.cacheList = this.resList.copyTo(this.cacheList);
     //矩阵转换
     for(var i = 0; i < this.gridNum; i++) {
         transform[i] = this.resList[i];
     }
     for(var i = 0; i < this.gridNum; i++) {
-        this.resList[i] = this.mergeItems(transform[i]);
+        ret = this.mergeItems(transform[i])
+        this.resList[i] = ret.retItems;
+        this.animateList.push(ret.actionArr);
     }
     this.direction = 2;
     this.dirCommonOp();
 }
 game.prototype.dirRight = function() {
-    var transform = [[], [], [], []];
+    var transform = this.initArray(),
+        ret;
+    //清空动画数据
+    this.clearAnimateData();
+
     this.cacheList = this.resList.copyTo(this.cacheList);
     //矩阵转换
     for(var i = 0; i < this.gridNum; i++) {
         transform[i] = this.resList[i].reverse();
     }
     for(var i = 0; i < this.gridNum; i++) {
-        this.resList[i] = this.mergeItems(transform[i]).reverse();
+        ret = this.mergeItems(transform[i]);
+        this.resList[i] = ret.retItems.reverse();
+        this.animateList.push(ret.actionArr);
     }
     this.direction = 3;
     this.dirCommonOp();
